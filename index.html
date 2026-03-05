@@ -967,7 +967,7 @@ function showReveal(payload) {
     wordSection.style.display = 'block';
     wordSection.style.animation = 'none';
     void wordSection.offsetWidth;
-    wordSection.style.animation = '';
+    wordSection.style.animation = 'fade-up 0.5s ease 1.6s forwards';
     wordDisplay.textContent = payload.word;
     btn.textContent = 'Got it';
     btn.className = 'btn btn-green';
