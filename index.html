@@ -585,6 +585,23 @@
       </div>
     </div>
 
+    <div style="text-align:center; width:100%; max-width:320px;">
+      <p class="label" style="margin-bottom:10px;">Word Language</p>
+      <div style="display:flex; gap:8px; justify-content:center;">
+        <button class="count-btn selected" id="lang-en" onclick="setLang('en')">EN</button>
+        <button class="count-btn" id="lang-nl" onclick="setLang('nl')">NL</button>
+      </div>
+    </div>
+
+    <div style="text-align:center; width:100%; max-width:320px;">
+      <p class="label" style="margin-bottom:10px;">Category</p>
+      <div style="display:flex; gap:8px; justify-content:center;">
+        <button class="count-btn selected" id="cat-normal"      onclick="setCat('normal')">Normal</button>
+        <button class="count-btn"          id="cat-outrageous"  onclick="setCat('outrageous')">Outrageous</button>
+        <button class="count-btn"          id="cat-fortnite"    onclick="setCat('fortnite')">Fortnite</button>
+      </div>
+    </div>
+
     <div id="lobby-error" class="error-box"></div>
 
     <button id="start-btn" class="btn btn-red" onclick="startGame()">
@@ -714,6 +731,8 @@ const state = {
   isHost: false,
   roomCode: null,
   imposterCount: 1,
+  language: 'en',
+  category: 'normal',
   role: null,
   word: null,
   players: [],
@@ -848,6 +867,18 @@ function joinRoom() {
   wsSend('JOIN_ROOM', { code, name });
 }
 
+function setLang(l) {
+  state.language = l;
+  ['en', 'nl'].forEach(x => document.getElementById('lang-' + x).classList.toggle('selected', x === l));
+  wsSend('SET_LANG', { language: l });
+}
+
+function setCat(c) {
+  state.category = c;
+  ['normal', 'outrageous', 'fortnite'].forEach(x => document.getElementById('cat-' + x).classList.toggle('selected', x === c));
+  wsSend('SET_CATEGORY', { category: c });
+}
+
 function setCount(n) {
   state.imposterCount = n;
   updateCountPicker(n);
@@ -922,8 +953,40 @@ function goToGame() {
   goTo('screen-game');
 }
 
+// ─── Reveal Sound ─────────────────────────────────────────────────────────────
+function playRevealSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+
+    const osc1 = ctx.createOscillator();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(55, ctx.currentTime);
+    osc1.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 2);
+    osc1.connect(gain);
+
+    const osc2 = ctx.createOscillator();
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(82, ctx.currentTime);
+    osc2.frequency.exponentialRampToValueAtTime(165, ctx.currentTime + 2);
+    osc2.connect(gain);
+
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.4);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime + 1.2);
+    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 2.5);
+
+    osc1.start(ctx.currentTime);
+    osc2.start(ctx.currentTime);
+    osc1.stop(ctx.currentTime + 2.6);
+    osc2.stop(ctx.currentTime + 2.6);
+  } catch(e) { /* unsupported */ }
+}
+
 // ─── Reveal Screen ────────────────────────────────────────────────────────────
 function showReveal(payload) {
+  playRevealSound();
   const isImp = payload.role === 'IMPOSTER';
 
   // Reset animations by re-inserting elements
@@ -943,7 +1006,7 @@ function showReveal(payload) {
   stamp.style.animation = '';
   sub.style.animation = '';
   label.style.animation = '';
-  btn.style.animation = '';
+  btn.style.animation = 'fade-up 0.5s ease 2.2s forwards';
 
   const wordSection = document.getElementById('reveal-word-section');
   const wordDisplay = document.getElementById('reveal-word-display');

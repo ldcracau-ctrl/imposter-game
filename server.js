@@ -8,27 +8,91 @@ import os from 'os';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
 
-// ─── Word list ────────────────────────────────────────────────────────────────
-const WORDS = [
-  // Animals
-  'Elephant', 'Penguin', 'Crocodile', 'Flamingo', 'Cheetah', 'Gorilla', 'Octopus', 'Dolphin',
-  'Vulture', 'Chameleon', 'Platypus', 'Wolverine', 'Manta Ray', 'Snow Leopard', 'Axolotl',
-  // Food
-  'Pizza', 'Sushi', 'Taco', 'Croissant', 'Dumplings', 'Burrito', 'Lasagna', 'Ramen',
-  'Pretzel', 'Gyoza', 'Falafel', 'Tiramisu', 'Baklava', 'Churro', 'Pavlova',
-  // Places
-  'Airport', 'Casino', 'Hospital', 'Library', 'Museum', 'Stadium', 'Submarine', 'Volcano',
-  'Lighthouse', 'Observatory', 'Monastery', 'Amusement Park', 'Prison', 'Ski Resort', 'Cruise Ship',
-  // Objects
-  'Telescope', 'Compass', 'Typewriter', 'Accordion', 'Periscope', 'Metronome', 'Sundial',
-  'Microscope', 'Boomerang', 'Sextant', 'Didgeridoo', 'Kaleidoscope', 'Abacus', 'Zeppelin',
-  // Sports & Activities
-  'Archery', 'Fencing', 'Polo', 'Curling', 'Bobsled', 'Parkour', 'Kayaking', 'Skydiving',
-  'Bouldering', 'Jousting', 'Wakeboarding', 'Falconry', 'Sumo Wrestling', 'Ice Skating',
-  // Nature
-  'Avalanche', 'Geyser', 'Quicksand', 'Tornado', 'Glacier', 'Coral Reef', 'Bioluminescence',
-  'Eclipse', 'Tidal Wave', 'Sinkholes', 'Aurora', 'Monsoon', 'Desert Mirage',
-];
+// ─── Word lists ───────────────────────────────────────────────────────────────
+const WORDS = {
+  en: {
+    normal: [
+      // Animals
+      'Elephant', 'Penguin', 'Crocodile', 'Flamingo', 'Cheetah', 'Gorilla', 'Octopus', 'Dolphin',
+      'Vulture', 'Chameleon', 'Platypus', 'Wolverine', 'Manta Ray', 'Snow Leopard', 'Axolotl',
+      // Food
+      'Pizza', 'Sushi', 'Taco', 'Croissant', 'Dumplings', 'Burrito', 'Lasagna', 'Ramen',
+      'Pretzel', 'Gyoza', 'Falafel', 'Tiramisu', 'Baklava', 'Churro', 'Pavlova',
+      // Places
+      'Airport', 'Casino', 'Hospital', 'Library', 'Museum', 'Stadium', 'Submarine', 'Volcano',
+      'Lighthouse', 'Observatory', 'Monastery', 'Amusement Park', 'Prison', 'Ski Resort', 'Cruise Ship',
+      // Objects
+      'Telescope', 'Compass', 'Typewriter', 'Accordion', 'Periscope', 'Metronome', 'Sundial',
+      'Microscope', 'Boomerang', 'Sextant', 'Didgeridoo', 'Kaleidoscope', 'Abacus', 'Zeppelin',
+      // Sports & Activities
+      'Archery', 'Fencing', 'Polo', 'Curling', 'Bobsled', 'Parkour', 'Kayaking', 'Skydiving',
+      'Bouldering', 'Jousting', 'Wakeboarding', 'Falconry', 'Sumo Wrestling', 'Ice Skating',
+      // Nature
+      'Avalanche', 'Geyser', 'Quicksand', 'Tornado', 'Glacier', 'Coral Reef', 'Bioluminescence',
+      'Eclipse', 'Tidal Wave', 'Sinkhole', 'Aurora', 'Monsoon', 'Desert Mirage',
+    ],
+    outrageous: [
+      'Armpit', 'Fart', 'Plunger', 'Nose Hair', 'Toenail Clipping', 'Mullet', 'Cargo Shorts',
+      'Crocs', 'Fanny Pack', 'Neck Pillow', 'Selfie Stick', 'Man Bun', 'Dad Joke', 'Airhorn',
+      'Kazoo', 'Fidget Spinner', 'Pineapple Pizza', 'Participation Trophy', 'Segway', 'Snuggie',
+      'Sock Puppet', 'Wet Willie', 'Waffle Iron', 'Disco Ball', 'Couch Potato', 'Swamp Gas',
+      'Belly Button', 'Foam Finger', 'Noogie', 'Wedgie', 'Burping Contest', 'Diaper',
+    ],
+    fortnite: [
+      // Locations
+      'Tilted Towers', 'Pleasant Park', 'Salty Springs', 'Retail Row', 'Lonely Lodge',
+      'Fatal Fields', 'Greasy Grove', 'Flush Factory', 'Lucky Landing', 'Dusty Divot',
+      'Lazy Links', 'Haunted Hills', 'Junk Junction', 'Wailing Woods', 'Shifty Shafts',
+      // Items
+      'Chug Jug', 'Shield Potion', 'Slurp Juice', 'Boogie Bomb', 'Port-a-Fort',
+      'Grappler', 'Impulse Grenade', 'Chug Splash', 'Med Mist', 'Crash Pad',
+      'Rift-to-Go', 'Flare Gun', 'Shadow Bomb', 'Bush',
+      // Skins & Characters
+      'Midas', 'Jonesy', 'Peely', 'Meowscles', 'Brutus', 'Kit', 'Skye', 'Jules',
+      'Ragnarok', 'Drift', 'Lynx', 'Ice King', 'Dark Voyager', 'Omega', 'Carbide',
+    ],
+  },
+  nl: {
+    normal: [
+      // Dieren
+      'Olifant', 'Pingu\u00efn', 'Krokodil', 'Flamingo', 'Cheeta', 'Gorilla', 'Octopus', 'Dolfijn',
+      'Gier', 'Kameleon', 'Vogelbekdier', 'Reuzenotter', 'Mantarog', 'Sneeuwluipaard', 'Axolotl',
+      // Eten
+      'Pizza', 'Sushi', 'Taco', 'Croissant', 'Dumplings', 'Burrito', 'Lasagne', 'Ramen',
+      'Pretzel', 'Gyoza', 'Falafel', 'Tiramisu', 'Baklava', 'Churro', 'Pavlova',
+      // Plaatsen
+      'Luchthaven', 'Casino', 'Ziekenhuis', 'Bibliotheek', 'Museum', 'Stadion', 'Onderze\u00eb\u00ebr', 'Vulkaan',
+      'Vuurtoren', 'Observatorium', 'Klooster', 'Pretpark', 'Gevangenis', 'Skigebied', 'Cruiseschip',
+      // Objecten
+      'Telescoop', 'Kompas', 'Typemachine', 'Accordeon', 'Periscoop', 'Metronoom', 'Zonnewijzer',
+      'Microscoop', 'Boemerang', 'Sextant', 'Didgeridoo', 'Caleidoscoop', 'Telraam', 'Zeppelin',
+      // Sport & Activiteiten
+      'Boogschieten', 'Schermen', 'Polo', 'Curling', 'Bobslee', 'Parkour', 'Kajakken', 'Parachutespringen',
+      'Boulderen', 'Wakeboarden', 'Valkenjacht', 'Sumoworstelen', 'Schaatsen', 'Jongleren',
+      // Natuur
+      'Lawine', 'Geiser', 'Drijfzand', 'Tornado', 'Gletsjer', 'Koraalrif', 'Bioluminescentie',
+      'Eclips', 'Vloedgolf', 'Zinkgat', 'Noorderlicht', 'Moesson', 'Luchtspiegeling',
+    ],
+    outrageous: [
+      'Oksel', 'Wind Laten', 'Wc-borstel', 'Neushaar', 'Teennagel Knippen', 'Mullet', 'Korte Broek',
+      'Crocs', 'Heuptasje', 'Reiskussen', 'Selfiestick', 'Man Bun', 'Vadergrap', 'Luchthoorn',
+      'Kazoo', 'Fidget Spinner', 'Ananas Pizza', 'Deelnamemedaille', 'Segway', 'Snuggie',
+      'Sokpop', 'Wafelijzer', 'Discobal', 'Bankplakker', 'Moerasgas', 'Navel',
+      'Schuimvinger', 'Boerenlul', 'Bilnaad', 'Winderig Bed', 'Scheefstand', 'Dropje',
+    ],
+    fortnite: [
+      // Same proper nouns as EN
+      'Tilted Towers', 'Pleasant Park', 'Salty Springs', 'Retail Row', 'Lonely Lodge',
+      'Fatal Fields', 'Greasy Grove', 'Flush Factory', 'Lucky Landing', 'Dusty Divot',
+      'Lazy Links', 'Haunted Hills', 'Junk Junction', 'Wailing Woods', 'Shifty Shafts',
+      'Chug Jug', 'Shield Potion', 'Slurp Juice', 'Boogie Bomb', 'Port-a-Fort',
+      'Grappler', 'Impulse Grenade', 'Chug Splash', 'Med Mist', 'Crash Pad',
+      'Rift-to-Go', 'Flare Gun', 'Shadow Bomb', 'Bush',
+      'Midas', 'Jonesy', 'Peely', 'Meowscles', 'Brutus', 'Kit', 'Skye', 'Jules',
+      'Ragnarok', 'Drift', 'Lynx', 'Ice King', 'Dark Voyager', 'Omega', 'Carbide',
+    ],
+  },
+};
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
 function getLocalIP() {
@@ -111,6 +175,8 @@ wss.on('connection', (ws) => {
           hostId: ws._id,
           players: [{ id: ws._id, name, ws, role: null }],
           imposterCount: 1,
+          language: 'en',
+          category: 'normal',
           gameActive: false,
           word: null,
         };
@@ -170,6 +236,20 @@ wss.on('connection', (ws) => {
         break;
       }
 
+      case 'SET_LANG': {
+        const room = getRoomForWs(ws);
+        if (!room || room.hostId !== ws._id) return;
+        if (['en', 'nl'].includes(payload.language)) room.language = payload.language;
+        break;
+      }
+
+      case 'SET_CATEGORY': {
+        const room = getRoomForWs(ws);
+        if (!room || room.hostId !== ws._id) return;
+        if (['normal', 'outrageous', 'fortnite'].includes(payload.category)) room.category = payload.category;
+        break;
+      }
+
       case 'START_GAME': {
         const room = getRoomForWs(ws);
         if (!room || room.hostId !== ws._id) return;
@@ -178,7 +258,10 @@ wss.on('connection', (ws) => {
           return;
         }
 
-        const word = WORDS[Math.floor(Math.random() * WORDS.length)];
+        const lang = ['en', 'nl'].includes(room.language) ? room.language : 'en';
+        const cat  = ['normal', 'outrageous', 'fortnite'].includes(room.category) ? room.category : 'normal';
+        const pool = WORDS[lang][cat];
+        const word = pool[Math.floor(Math.random() * pool.length)];
         room.word = word;
         room.gameActive = true;
 
